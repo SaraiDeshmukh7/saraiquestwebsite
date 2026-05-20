@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carbon Count: School Edition — Sarai Deshmukh</title>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal:    #1a7a5e;
+    --teal-dk: #145f49;
+    --teal-lt: #e8f5f1;
+    --white:   #ffffff;
+    --off:     #f7f7f7;
+    --coal:    #1c1c1a;
+    --mid:     #4a4a45;
+    --mist:    #c8dfd8;
+    --gold:    #d4a017;
+    --gold-lt: #fdf6e3;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--white); color: var(--coal); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.07);
+    display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 3.5rem;
+  }
+  .nav-logo { font-family: 'Zilla Slab', serif; font-weight: 700; font-size: 1.1rem; color: var(--teal); text-decoration: none; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 0.85rem; font-weight: 500; color: var(--mid); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--teal); }
+
+  .hero { min-height: 100vh; background: var(--teal); display: grid; grid-template-rows: 1fr auto; padding-top: 64px; position: relative; overflow: hidden; }
+  .hero-shape { position: absolute; opacity: 0.15; }
+  .hs1 { width: 320px; height: 320px; background: #fff; border-radius: 50%; top: -80px; right: -80px; }
+  .hs2 { width: 180px; height: 180px; background: #fff; bottom: 120px; right: 200px; opacity: 0.08; border-radius: 0; }
+  .hs3 { width: 240px; height: 240px; background: var(--teal-dk); border-radius: 50%; top: 40%; left: -60px; opacity: 0.5; }
+
+  .particle { position: absolute; border-radius: 50%; opacity: 0; animation: rise linear infinite; }
+  @keyframes rise { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 0.35; } 90% { opacity: 0.1; } 100% { transform: translateY(-100vh); opacity: 0; } }
+
+  .hero-content { position: relative; z-index: 10; display: flex; flex-direction: column; justify-content: center; padding: 4rem 3.5rem 2rem; max-width: 820px; }
+
+  .gold-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--gold-lt); border: 1.5px solid var(--gold); color: #8a6800;
+    font-size: 0.8rem; font-weight: 500; padding: 0.45rem 1rem; border-radius: 100px;
+    margin-bottom: 1.75rem; width: fit-content;
+    opacity: 0; animation: fadeUp 0.7s ease 0.1s forwards;
+  }
+  .gold-badge::before { content: '🏅'; font-size: 1rem; }
+
+  .hero-label { font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.55); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 1rem; opacity: 0; animation: fadeUp 0.7s ease 0.25s forwards; }
+  .hero-title { font-family: 'Zilla Slab', serif; font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 700; color: #fff; line-height: 1.05; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s ease 0.35s forwards; }
+  .hero-title em { font-style: italic; color: rgba(255,255,255,0.65); }
+  .hero-subtitle { font-size: 1.05rem; color: rgba(255,255,255,0.7); max-width: 520px; line-height: 1.75; opacity: 0; animation: fadeUp 0.8s ease 0.5s forwards; }
+
+  .hero-meta { position: relative; z-index: 10; display: flex; gap: 2.5rem; padding: 1.75rem 3.5rem 3rem; border-top: 1px solid rgba(255,255,255,0.12); flex-wrap: wrap; opacity: 0; animation: fadeUp 0.8s ease 0.65s forwards; }
+  .meta-item { display: flex; flex-direction: column; gap: 0.25rem; }
+  .meta-label { font-size: 0.65rem; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 0.14em; text-transform: uppercase; }
+  .meta-value { font-size: 0.9rem; color: rgba(255,255,255,0.85); font-weight: 400; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+  section { padding: 5rem 3.5rem; }
+  .section-tag { font-size: 0.65rem; font-weight: 500; color: var(--teal); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.6rem; }
+  .section-tag::before { content: ''; width: 1.5rem; height: 2px; background: var(--teal); display: block; }
+  h2 { font-family: 'Zilla Slab', serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 700; line-height: 1.15; color: var(--coal); margin-bottom: 1.5rem; }
+  p { font-size: 1rem; line-height: 1.8; color: var(--mid); max-width: 660px; }
+
+  .motivation { background: var(--off); display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .motivation-quote { font-family: 'Zilla Slab', serif; font-size: 1.45rem; font-style: italic; color: var(--teal-dk); line-height: 1.45; border-left: 3px solid var(--teal); padding-left: 1.25rem; margin-top: 0.5rem; }
+
+  .stats-band { background: var(--teal); padding: 4rem 3.5rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .stat-card { border: 1px solid rgba(255,255,255,0.12); padding: 2rem 1.5rem; transition: background 0.25s; }
+  .stat-card:hover { background: rgba(255,255,255,0.06); }
+  .stat-number { font-family: 'Zilla Slab', serif; font-size: 2.6rem; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 0.3rem; }
+  .stat-unit { font-size: 0.72rem; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.75rem; }
+  .stat-desc { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.55; }
+
+  .scope-section { background: var(--white); }
+  .scope-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 2.5rem; }
+  .scope-card { background: var(--off); border: 1px solid rgba(0,0,0,0.05); padding: 2.25rem 2rem; transition: transform 0.25s, box-shadow 0.25s; }
+  .scope-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(26,122,94,0.1); }
+  .scope-number { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.3rem 0.7rem; border-radius: 3px; display: inline-block; margin-bottom: 1.25rem; }
+  .s1 .scope-number { background: var(--teal-dk); color: #fff; }
+  .s2 .scope-number { background: var(--teal); color: #fff; }
+  .s3 .scope-number { background: var(--mist); color: var(--teal-dk); }
+  .scope-title { font-family: 'Zilla Slab', serif; font-size: 1.2rem; font-weight: 700; color: var(--coal); margin-bottom: 0.6rem; }
+  .scope-kg { font-family: 'Zilla Slab', serif; font-size: 1.9rem; font-weight: 700; color: var(--teal); margin-bottom: 0.2rem; }
+  .scope-pct { font-size: 0.72rem; color: #999; margin-bottom: 1.1rem; font-weight: 500; }
+  .scope-bar-wrap { height: 4px; background: var(--mist); border-radius: 2px; margin-bottom: 1.25rem; overflow: hidden; }
+  .scope-bar { height: 100%; background: var(--teal); border-radius: 2px; width: 0%; transition: width 1.4s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .scope-items { list-style: none; display: flex; flex-direction: column; }
+  .scope-items li { font-size: 0.78rem; color: #666; display: flex; justify-content: space-between; padding: 0.45rem 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .scope-items li span:last-child { color: var(--coal); font-weight: 500; }
+
+  .methodology { background: var(--teal-dk); }
+  .methodology h2 { color: #fff; }
+  .methodology .section-tag { color: rgba(255,255,255,0.5); }
+  .methodology .section-tag::before { background: rgba(255,255,255,0.3); }
+  .methodology p { color: rgba(255,255,255,0.6); }
+  .method-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 2.5rem; }
+  .method-step { padding: 2rem; border: 1px solid rgba(255,255,255,0.1); position: relative; }
+  .step-num { font-family: 'Zilla Slab', serif; font-size: 3rem; font-weight: 700; color: rgba(255,255,255,0.05); position: absolute; top: 0.5rem; right: 1rem; line-height: 1; }
+  .step-title { font-size: 0.7rem; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .step-desc { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.65; max-width: none; }
+
+  .comparison { background: var(--off); }
+  .compare-table { margin-top: 2rem; width: 100%; border-collapse: collapse; max-width: 740px; }
+  .compare-table th { font-size: 0.63rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #999; text-align: left; padding: 0.7rem 1rem; border-bottom: 2px solid var(--mist); }
+  .compare-table td { font-size: 0.9rem; padding: 0.9rem 1rem; border-bottom: 1px solid var(--mist); color: var(--coal); }
+  .compare-table tr.highlight td { background: var(--teal-lt); }
+  .compare-table tr.highlight td:first-child { border-left: 3px solid var(--teal); font-weight: 500; }
+  .bar-cell { display: flex; align-items: center; gap: 0.75rem; }
+  .inline-bar { height: 6px; background: var(--mist); border-radius: 3px; flex: 1; overflow: hidden; }
+  .inline-fill { height: 100%; border-radius: 3px; width: 0%; transition: width 1.2s ease; background: #bbb; }
+  .inline-fill.mine { background: var(--teal); }
+
+  .impact { background: var(--white); }
+  .impact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 2.5rem; max-width: 740px; }
+  .impact-card { padding: 2rem; border: 1px solid rgba(0,0,0,0.06); background: var(--off); }
+  .impact-icon { font-size: 1.4rem; margin-bottom: 0.85rem; display: block; }
+  .impact-title { font-family: 'Zilla Slab', serif; font-size: 1.05rem; font-weight: 700; color: var(--coal); margin-bottom: 0.5rem; }
+  .impact-text { font-size: 0.87rem; color: var(--mid); line-height: 1.65; max-width: none; }
+
+  .cta-section { background: var(--teal); padding: 5rem 3.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .cta-section h2 { color: #fff; }
+  .cta-section .section-tag { color: rgba(255,255,255,0.5); }
+  .cta-section .section-tag::before { background: rgba(255,255,255,0.3); }
+  .future-list { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+  .future-list li { display: flex; gap: 0.85rem; font-size: 0.92rem; color: rgba(255,255,255,0.65); line-height: 1.5; align-items: flex-start; }
+  .future-list li::before { content: '→'; color: rgba(255,255,255,0.4); flex-shrink: 0; }
+  .contact-box { border: 1px solid rgba(255,255,255,0.15); padding: 2.25rem; background: rgba(255,255,255,0.05); }
+  .contact-box p { font-size: 0.92rem; color: rgba(255,255,255,0.55); margin-bottom: 1.5rem; max-width: none; }
+  .contact-label { font-size: 0.63rem; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.5rem; display: block; }
+  .contact-value { font-size: 0.92rem; color: #fff; margin-bottom: 1.25rem; display: block; }
+
+  footer { background: var(--coal); padding: 1.75rem 3.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  footer p { font-size: 0.72rem; color: rgba(255,255,255,0.25); max-width: none; }
+  footer a { color: rgba(255,255,255,0.35); text-decoration: none; }
+  footer a:hover { color: rgba(255,255,255,0.6); }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 860px) {
+    nav, section, .stats-band, .cta-section, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .motivation, .scope-grid, .method-steps, .cta-section, .impact-grid { grid-template-columns: 1fr; }
+    .stats-band { grid-template-columns: 1fr 1fr; }
+    .hero-content { padding: 3rem 1.5rem 2rem; }
+    .hero-meta { padding: 1.5rem 1.5rem 2.5rem; gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://www.sarai.quest/">Sarai.</a>
+  <ul class="nav-links">
+    <li><a href="https://www.sarai.quest/s-projects-side-by-side">Projects</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#method">Method</a></li>
+    <li><a href="#future">Future</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hs1 hero-shape"></div>
+  <div class="hs2 hero-shape"></div>
+  <div class="hs3 hero-shape"></div>
+  <div class="particle" style="width:5px;height:5px;background:#fff;left:18%;bottom:0;animation-duration:9s;animation-delay:0s;"></div>
+  <div class="particle" style="width:3px;height:3px;background:#fff;left:38%;bottom:0;animation-duration:12s;animation-delay:2s;"></div>
+  <div class="particle" style="width:4px;height:4px;background:#fff;left:60%;bottom:0;animation-duration:10s;animation-delay:1s;"></div>
+  <div class="particle" style="width:3px;height:3px;background:#fff;left:78%;bottom:0;animation-duration:14s;animation-delay:3s;"></div>
+
+  <div class="hero-content">
+    <div class="gold-badge">Crest Gold Award 2025</div>
+    <span class="hero-label">Research Project · Environmental Science</span>
+    <h1 class="hero-title">The <em>Hidden</em><br>Cost</h1>
+    <p class="hero-subtitle">How green are our schools? I built an accessible, India-specific carbon footprint calculator for schools — measuring what symbolic gestures can't.</p>
+  </div>
+
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">School</span>
+      <span class="meta-value">Tomoae Primary English School</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Location</span>
+      <span class="meta-value">Amravati, Maharashtra</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Year</span>
+      <span class="meta-value">2025</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Award</span>
+      <span class="meta-value" style="color:#f5d97a;font-weight:500;">🏅 Crest Gold</span>
+    </div>
+  </div>
+</section>
+
+<section class="motivation" id="about">
+  <div>
+    <span class="section-tag">Why I Built This</span>
+    <h2>Schools talk about climate. They don't measure it.</h2>
+    <p>Growing up in India, I've seen climate change firsthand — hotter summers, irregular monsoons, worsening air quality. Despite all the awareness campaigns, not a single school in my city follows a structured carbon-emission measurement or reduction plan.</p>
+    <br>
+    <p>Existing calculators are too technical, too expensive, or built for other countries entirely. So I built one myself — India-specific, student-friendly, and free to use.</p>
+  </div>
+  <div>
+    <p class="motivation-quote">"Climate learning must be experiential. Students understand better when they measure real data instead of only reading theory."</p>
+    <br><br>
+    <p>Schools rely on symbolic practices — like planting trees — without measuring whether they actually reduce emissions. This tool changes that with real numbers.</p>
+  </div>
+</section>
+
+<div class="stats-band">
+  <div class="stat-card reveal">
+    <div class="stat-number">211,042</div>
+    <span class="stat-unit">kg CO₂e / year</span>
+    <p class="stat-desc">Total annual greenhouse gas emissions across all three scopes.</p>
+  </div>
+  <div class="stat-card reveal">
+    <div class="stat-number">141</div>
+    <span class="stat-unit">kg CO₂e / person</span>
+    <p class="stat-desc">Far lower than German schools (335–944) or US schools (~1,180).</p>
+  </div>
+  <div class="stat-card reveal">
+    <div class="stat-number">3</div>
+    <span class="stat-unit">Scopes measured</span>
+    <p class="stat-desc">Direct, purchased energy, and all other indirect emissions — fully covered.</p>
+  </div>
+  <div class="stat-card reveal">
+    <div class="stat-number">240</div>
+    <span class="stat-unit">School days / year</span>
+    <p class="stat-desc">All emissions annualised across a full academic year for accurate results.</p>
+  </div>
+</div>
+
+<section class="scope-section" id="results">
+  <span class="section-tag">Results</span>
+  <h2>Emissions by Scope</h2>
+  <p>The GHG Protocol divides emissions into three scopes. Here's how the school's footprint breaks down.</p>
+  <div class="scope-grid">
+    <div class="scope-card s1 reveal">
+      <span class="scope-number">Scope 1 · Direct</span>
+      <div class="scope-title">On-campus sources</div>
+      <div class="scope-kg">62,323</div>
+      <div class="scope-pct">29.5% of total · kg CO₂e</div>
+      <div class="scope-bar-wrap"><div class="scope-bar" data-width="29.5"></div></div>
+      <ul class="scope-items">
+        <li><span>Diesel school buses</span><span>54,940 kg</span></li>
+        <li><span>Backup generators</span><span>4,824 kg</span></li>
+        <li><span>Septic wastewater</span><span>2,559 kg</span></li>
+      </ul>
+    </div>
+    <div class="scope-card s2 reveal">
+      <span class="scope-number">Scope 2 · Indirect Energy</span>
+      <div class="scope-title">Grid & commuting</div>
+      <div class="scope-kg">55,928</div>
+      <div class="scope-pct">26.5% of total · kg CO₂e</div>
+      <div class="scope-bar-wrap"><div class="scope-bar" data-width="26.5"></div></div>
+      <ul class="scope-items">
+        <li><span>Carpool commuting</span><span>27,248 kg</span></li>
+        <li><span>Personal car use</span><span>12,480 kg</span></li>
+        <li><span>Two-wheeler use</span><span>10,080 kg</span></li>
+        <li><span>Grid electricity</span><span>5,160 kg</span></li>
+      </ul>
+    </div>
+    <div class="scope-card s3 reveal">
+      <span class="scope-number">Scope 3 · Other Indirect</span>
+      <div class="scope-title">Materials & services</div>
+      <div class="scope-kg">92,791</div>
+      <div class="scope-pct">44% of total · kg CO₂e</div>
+      <div class="scope-bar-wrap"><div class="scope-bar" data-width="44"></div></div>
+      <ul class="scope-items">
+        <li><span>School uniforms</span><span>72,000 kg</span></li>
+        <li><span>Books & notebooks</span><span>13,320 kg</span></li>
+        <li><span>Paper & stationery</span><span>6,075 kg</span></li>
+        <li><span>Cleaning & waste</span><span>1,957 kg</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="methodology" id="method">
+  <span class="section-tag">How It Works</span>
+  <h2>The methodology</h2>
+  <p>India-specific emission factors from the CEA and India GHG Program, with IPCC 2006 defaults where local data was unavailable.</p>
+  <div class="method-steps">
+    <div class="method-step reveal">
+      <span class="step-num">01</span>
+      <div class="step-title">Define Scope & Boundary</div>
+      <p class="step-desc">Set the school's operational boundary and classified all activities under Scope 1, 2, and 3 per the GHG Protocol.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="step-num">02</span>
+      <div class="step-title">Collect Real Data</div>
+      <p class="step-desc">Fuel and electricity bills, school records, and structured surveys on commuting, uniforms, and books gathered from school authorities and vendors.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="step-num">03</span>
+      <div class="step-title">Apply Emission Factors</div>
+      <p class="step-desc">India-specific factors from CEA and India GHG Program applied. IPCC 2006 defaults used where local data was unavailable.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="step-num">04</span>
+      <div class="step-title">Stratified Sampling</div>
+      <p class="step-desc">One class per school level surveyed, then extrapolated to the full student population for accuracy without burdening every class.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="step-num">05</span>
+      <div class="step-title">Calculate & Annualise</div>
+      <p class="step-desc">Activity data converted to CO₂e and scaled across 240 school days, with per-capita and scope-wise breakdowns produced.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="step-num">06</span>
+      <div class="step-title">Validate & Refine</div>
+      <p class="step-desc">A pilot test improved survey clarity. Results cross-checked against international reference studies for consistency.</p>
+    </div>
+  </div>
+</section>
+
+<section class="comparison">
+  <span class="section-tag">Global Context</span>
+  <h2>How India compares</h2>
+  <p>Per capita emissions at this school are far lower than Western counterparts — reflecting differences in climate, infrastructure, and school services.</p>
+  <table class="compare-table reveal">
+    <thead>
+      <tr><th>School / Region</th><th>Per Capita (kg CO₂e)</th><th>Scale</th></tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td>Tomoae School, India (this study)</td>
+        <td>141</td>
+        <td class="bar-cell"><div class="inline-bar"><div class="inline-fill mine" data-width="11.9"></div></div>141</td>
+      </tr>
+      <tr>
+        <td>Spanish Design College</td>
+        <td>170</td>
+        <td class="bar-cell"><div class="inline-bar"><div class="inline-fill" data-width="14.4"></div></div>170</td>
+      </tr>
+      <tr>
+        <td>German Secondary Schools (low)</td>
+        <td>335</td>
+        <td class="bar-cell"><div class="inline-bar"><div class="inline-fill" data-width="28.4"></div></div>335</td>
+      </tr>
+      <tr>
+        <td>German Secondary Schools (high)</td>
+        <td>944</td>
+        <td class="bar-cell"><div class="inline-bar"><div class="inline-fill" data-width="79.9"></div></div>944</td>
+      </tr>
+      <tr>
+        <td>US School (Montgomery County, MD)</td>
+        <td>~1,180</td>
+        <td class="bar-cell"><div class="inline-bar"><div class="inline-fill" data-width="100"></div></div>~1,180</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="impact">
+  <span class="section-tag">Real-World Impact</span>
+  <h2>Why it matters</h2>
+  <div class="impact-grid">
+    <div class="impact-card reveal">
+      <span class="impact-icon">🏫</span>
+      <div class="impact-title">For Schools</div>
+      <p class="impact-text">Identifies major emission sources and enables annual tracking — moving beyond symbolic green practices to evidence-based action.</p>
+    </div>
+    <div class="impact-card reveal">
+      <span class="impact-icon">🌱</span>
+      <div class="impact-title">For Students</div>
+      <p class="impact-text">Turns climate theory into real experience. Students measure actual data from their own school, building genuine environmental literacy.</p>
+    </div>
+    <div class="impact-card reveal">
+      <span class="impact-icon">📊</span>
+      <div class="impact-title">For Policymakers</div>
+      <p class="impact-text">Creates a baseline dataset to compare schools across sizes, locations, and management types — useful for research and policy.</p>
+    </div>
+    <div class="impact-card reveal">
+      <span class="impact-icon">🌏</span>
+      <div class="impact-title">For the Region</div>
+      <p class="impact-text">A free, open-access tool built for Indian and SAARC schools. No expensive software required. Designed to spread.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="future">
+  <div>
+    <span class="section-tag">What's Next</span>
+    <h2>Future plans</h2>
+    <ul class="future-list">
+      <li>Multi-school study across Amravati</li>
+      <li>Web dashboard or app alongside the Excel version</li>
+      <li>Real-time meters for electricity and generator logging</li>
+      <li>Student-led campaigns with measurable outcomes</li>
+      <li>Deeper lifecycle analysis of textile &amp; transport emissions</li>
+      <li>Share as a free, open-access tool at environmental events</li>
+    </ul>
+  </div>
+  <div class="contact-box">
+    <span class="section-tag" style="color:rgba(255,255,255,0.4);">Get in touch</span>
+    <h2 style="font-size:1.7rem;margin-bottom:1.25rem;">Want to use the calculator?</h2>
+    <p>If you're a school, teacher, student, or researcher who wants to use or adapt this tool, I'd love to connect.</p>
+    <span class="contact-label">School</span>
+    <span class="contact-value">Tomoae Primary English School, Amravati</span>
+    <span class="contact-label">Award</span>
+    <span class="contact-value">🏅 Crest Gold 2025</span>
+    <span class="contact-label">Website</span>
+    <span class="contact-value"><a href="https://www.sarai.quest" style="color:#a8dfd0;">sarai.quest</a></span>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Sarai Deshmukh · <a href="https://www.sarai.quest">sarai.quest</a></p>
+  <p>Crest Gold Award · Environmental Science Research</p>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const siblings = [...(entry.target.parentElement?.children || [])];
+      const delay = siblings.length > 1 ? siblings.indexOf(entry.target) * 80 : 0;
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+        entry.target.querySelectorAll('[data-width]').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+      }, delay);
+      obs.unobserve(entry.target);
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // table bars
+  document.querySelectorAll('.compare-table').forEach(table => {
+    const tObs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        table.querySelectorAll('[data-width]').forEach(b => b.style.width = b.dataset.width + '%');
+        tObs.disconnect();
+      }
+    }, { threshold: 0.1 });
+    tObs.observe(table);
+  });
+</script>
+</body>
+</html>
